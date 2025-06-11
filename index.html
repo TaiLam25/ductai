@@ -17,7 +17,7 @@
       border-radius: 10px;
     }
     .header img {
-      width: 100px;
+      width: 150px; /* tăng kích thước logo */
     }
     .form-container {
       background: white;
@@ -52,17 +52,20 @@
     .btn-primary:hover {
       background-color: #0056b3;
     }
+    footer {
+      text-align: center;
+      color: #888;
+      font-size: 0.9rem;
+      margin-top: 40px;
+    }
   </style>
 </head>
-<footer class="text-center text-muted mt-5 small">
-  <p>Tạo bởi <strong>Lâm Đức Tài</strong></p>
-</footer>
 <body>
   <div class="container py-5">
     
     <!-- Header -->
     <div class="header text-center mb-5">
-      <img src="anhtruong.png" alt="Logo Trường" width = "150" />
+      <img src="anhtruong.png" alt="Logo Trường" />
       <h1 class="mt-3">KHO THÔNG TIN SINH VIÊN ĐẠI HỌC MỞ</h1>
     </div>
 
@@ -100,6 +103,11 @@
     <h4 class="mb-3">📂 Danh sách sinh viên đã lưu</h4>
     <div id="studentList" class="row gy-4"></div>
   </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>Tạo bởi <strong>Lâm Đức Tài</strong></p>
+  </footer>
 
   <script>
     const studentForm = document.getElementById("studentForm");
