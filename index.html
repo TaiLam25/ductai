@@ -1,98 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Thông tin cá nhân</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kho Thông Tin Sinh Viên</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     .avatar {
-      width: 150px;
-      height: 150px;
+      width: 100px;
+      height: 100px;
       object-fit: cover;
       border-radius: 50%;
-      border: 3px solid #007bff;
+      border: 2px solid #007bff;
     }
   </style>
 </head>
 <body class="bg-light">
-
   <div class="container py-5">
-    <h1 class="text-center mb-4">Thông tin cá nhân</h1>
 
-    <div class="text-center mb-4">
-      <img id="avatar.jpg" src="avatar.jpg" alt="Ảnh đại diện" class="avatar mb-3">
-      <h3 id="name">Lâm Đức Tài</h3>
-      <p id="dob">Ngày sinh: 25/12/2005</p>
-      <p id="major">Ngành học: Khoa học máy tính</p>
-      <p id="university">Trường: Đại học Mỏa TPHCM</p>
+    <!-- Header với logo và tiêu đề -->
+    <div class="text-center mb-5">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Logo-Đại-học-Mở-TPHCM.svg/1200px-Logo-Đại-học-Mở-TPHCM.svg.png" alt="Logo Trường" width="120">
+      <h1 class="mt-3">KHO THÔNG TIN SINH VIÊN ĐẠI HỌC MỞ</h1>
     </div>
 
-    <hr>
-
-    <h2 class="text-center">Nhập thông tin của bạn</h2>
-    <form id="infoForm" class="mt-4">
-      <div class="mb-3">
-        <label for="inputName" class="form-label">Họ tên</label>
-        <input type="text" class="form-control" id="inputName" required>
+    <!-- Form nhập thông tin -->
+    <h4>Nhập thông tin sinh viên</h4>
+    <form id="studentForm" class="mb-5" enctype="multipart/form-data">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="name" class="form-label">Họ tên</label>
+          <input type="text" class="form-control" id="name" required />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="dob" class="form-label">Ngày sinh (dd/mm/yy)</label>
+          <input type="text" class="form-control" id="dob" pattern="\\d{2}/\\d{2}/\\d{2}" placeholder="01/01/00" required />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="major" class="form-label">Ngành học</label>
+          <input type="text" class="form-control" id="major" required />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="university" class="form-label">Trường</label>
+          <input type="text" class="form-control" id="university" value="Đại học Mở" required />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="avatar" class="form-label">Ảnh đại diện (upload)</label>
+          <input type="file" class="form-control" id="avatar" accept="image/*" />
+        </div>
       </div>
-      <div class="mb-3">
-        <label for="inputDOB" class="form-label">Ngày sinh</label>
-        <input type="date" class="form-control" id="inputDOB" required>
-      </div>
-      <div class="mb-3">
-        <label for="inputMajor" class="form-label">Ngành học</label>
-        <input type="text" class="form-control" id="inputMajor" required>
-      </div>
-      <div class="mb-3">
-        <label for="inputUniversity" class="form-label">Trường</label>
-        <input type="text" class="form-control" id="inputUniversity" required>
-      </div>
-      <div class="mb-3">
-        <label for="inputAvatar" class="form-label">Link ảnh đại diện</label>
-        <input type="url" class="form-control" id="inputAvatar" placeholder="https://example.com/avatar.jpg">
-      </div>
-      <button type="submit" class="btn btn-primary w-100">Lưu và hiển thị</button>
+      <button type="submit" class="btn btn-primary">Lưu sinh viên</button>
     </form>
+
+    <!-- Danh sách sinh viên -->
+    <h4>Danh sách sinh viên đã lưu</h4>
+    <div id="studentList" class="row gy-3"></div>
   </div>
 
   <script>
-    const form = document.getElementById('infoForm');
-    const avatar = document.getElementById('avatar');
-    const nameField = document.getElementById('name');
-    const dobField = document.getElementById('dob');
-    const majorField = document.getElementById('major');
-    const universityField = document.getElementById('university');
+    const studentForm = document.getElementById("studentForm");
+    const studentList = document.getElementById("studentList");
 
-    // Load từ localStorage nếu có
-    window.onload = function () {
-      const data = JSON.parse(localStorage.getItem('userInfo'));
-      if (data) {
-        updateInfo(data);
+    // Đọc sinh viên đã lưu từ localStorage
+    function loadStudents() {
+      const students = JSON.parse(localStorage.getItem("students")) || [];
+      studentList.innerHTML = "";
+      students.forEach((student, index) => {
+        const card = document.createElement("div");
+        card.className = "col-md-4";
+        card.innerHTML = `
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <img src="${student.avatar}" class="avatar mb-2" alt="Avatar">
+              <h5>${student.name}</h5>
+              <p>Ngày sinh: ${student.dob}</p>
+              <p>Ngành: ${student.major}</p>
+              <p>Trường: ${student.university}</p>
+              <button class="btn btn-sm btn-danger" onclick="deleteStudent(${index})">Xoá</button>
+            </div>
+          </div>
+        `;
+        studentList.appendChild(card);
+      });
+    }
+
+    // Chuyển file ảnh thành URL
+    function readAvatarFile(file, callback) {
+      if (!file) {
+        callback("https://via.placeholder.com/100");
+        return;
       }
-    };
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const data = {
-        name: document.getElementById('inputName').value,
-        dob: document.getElementById('inputDOB').value,
-        major: document.getElementById('inputMajor').value,
-        university: document.getElementById('inputUniversity').value,
-        avatar: document.getElementById('inputAvatar').value || "https://via.placeholder.com/150"
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        callback(e.target.result);
       };
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      updateInfo(data);
+      reader.readAsDataURL(file);
+    }
+
+    // Xử lý form lưu sinh viên
+    studentForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const dob = document.getElementById("dob").value;
+      const major = document.getElementById("major").value;
+      const university = document.getElementById("university").value;
+      const file = document.getElementById("avatar").files[0];
+
+      readAvatarFile(file, function (avatarUrl) {
+        const newStudent = { name, dob, major, university, avatar: avatarUrl };
+        const students = JSON.parse(localStorage.getItem("students")) || [];
+        students.push(newStudent);
+        localStorage.setItem("students", JSON.stringify(students));
+        loadStudents();
+        studentForm.reset();
+      });
     });
 
-    function updateInfo(data) {
-      nameField.textContent = data.name;
-      dobField.textContent = `Ngày sinh: ${data.dob}`;
-      majorField.textContent = `Ngành học: ${data.major}`;
-      universityField.textContent = `Trường: ${data.university}`;
-      avatar.src = data.avatar;
+    // Xoá sinh viên
+    function deleteStudent(index) {
+      const students = JSON.parse(localStorage.getItem("students")) || [];
+      students.splice(index, 1);
+      localStorage.setItem("students", JSON.stringify(students));
+      loadStudents();
     }
-  </script>
 
+    // Tải dữ liệu khi mở trang
+    window.onload = loadStudents;
+  </script>
 </body>
 </html>
